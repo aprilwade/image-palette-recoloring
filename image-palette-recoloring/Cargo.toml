@@ -1,0 +1,17 @@
+[package]
+name = "image-recoloring"
+version = "0.1.0"
+authors = ["April Wade <wayedt@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+image = "0.24"
+nalgebra = "0.32"
+nalgebra-sparse = "0.9"
+qhull-rs = { path = "../qhull-rs" }
+good_lp = { version = "1.4", features = ["minilp"], default-features = false }
+
+
+[dev-dependencies]
+clap = { version = "4.2", features = ["derive"] }
+

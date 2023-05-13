@@ -1,0 +1,18 @@
+[package]
+name = "qhull-rs"
+version = "0.1.0"
+authors = ["April Wade <wayedt@gmail.com>"]
+edition = "2018"
+
+[[bench]]
+name = "image_rgbxy"
+harness = false
+
+[dependencies]
+libc = "0.2"
+nalgebra = "0.32"
+qhull-sys = { path = "../qhull-sys" }
+
+[dev-dependencies]
+criterion = "0.3"
+image = "0.24"
