@@ -5,6 +5,8 @@ use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
 
+use image_palette_recoloring::{compute_palette, DecomposedImage, ImageWeights};
+
 #[derive(Debug, Parser)]
 struct Cli {
     #[command(subcommand)]
@@ -78,7 +80,7 @@ fn main_inner() -> Result<(), Box<dyn std::error::Error>> {
             let img = ImageReader::open(&input_image)
                 .unwrap().decode().unwrap();
             let img = img.into_rgb8();
-            let palette = image_recoloring::compute_palette(&img, min_size as usize, error_bound);
+            let palette = compute_palette(&img, min_size as usize, error_bound);
             // let palette = image_recoloring::compute_palette_with_size(&img, 4);
             let palette_hex: Vec<String> = palette.iter()
                 .map(|color| format!("{:02x}{:02x}{:02x}", color.0[0], color.0[1], color.0[2]))
@@ -97,8 +99,8 @@ fn main_inner() -> Result<(), Box<dyn std::error::Error>> {
             }
             let img = ImageReader::open(&input_image).unwrap().decode().unwrap();
             let img = img.into_rgb8();
-            let weights = image_recoloring::ImageWeights::new(&img);
-            let decomposed = image_recoloring::DecomposedImage::new(&weights, &decomposition_palette).unwrap();
+            let weights = ImageWeights::new(&img);
+            let decomposed = DecomposedImage::new(&weights, &decomposition_palette).unwrap();
 
             let reconstructed_img = decomposed.reconstruct(&reconstruction_palette).unwrap();
             reconstructed_img.save(&output_image).unwrap();

@@ -3,6 +3,7 @@ members = [
     "qhull-rs",
     "qhull-sys",
     "image-palette-recoloring",
+    "image-palette-recoloring-cli",
 ]
 
 

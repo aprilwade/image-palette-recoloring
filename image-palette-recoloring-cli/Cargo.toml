@@ -1,0 +1,11 @@
+[package]
+name = "image-palette-recoloring-cli"
+version = "0.1.0"
+authors = ["April Wade <wayedt@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.2", features = ["derive"] }
+image = "0.24"
+image-palette-recoloring = { path = "../image-palette-recoloring" }
+
