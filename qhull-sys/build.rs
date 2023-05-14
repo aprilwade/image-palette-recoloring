@@ -14,8 +14,6 @@ const C_FILES: &[&str] = &[
     "qhull/src/libqhull_r/userprintf_r.c",
     "qhull/src/libqhull_r/io_r.c",
     "qhull/src/libqhull_r/user_r.c",
-    "qhull/src/libqhull_r/rboxlib_r.c",
-    "qhull/src/libqhull_r/userprintf_rbox_r.c",
     "src/ext.c",
 ];
 
