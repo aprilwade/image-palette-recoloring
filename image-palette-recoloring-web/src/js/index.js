@@ -23,7 +23,7 @@ function colorInputUpdateTextInput(event) {
 }
 
 function textInputUpdateColorInput(event) {
-    let value = event.target.value;
+    const value = event.target.value;
 
     // We need to ensure that we're looking at a valid color before we update the text field.
     let isValidHexString = value[0] == '#' && value.length == 7;
@@ -42,7 +42,7 @@ function textInputUpdateColorInput(event) {
 
 function readBlobAsDataURL(blob) {
     return new Promise((resolve, reject) => {
-        let fr = new FileReader();
+        const fr = new FileReader();
         fr.onload = () => {
             resolve(fr.result);
         };
@@ -89,7 +89,7 @@ async function recomputeImageWeights(array) {
     }
 
     console.log("Issued request to worker");
-    let [imageWeightsPtr, returnedArray] = await thread.sendRequest({
+    const [imageWeightsPtr, returnedArray] = await thread.sendRequest({
         method: "createImageWeights",
         args: [array, offscreenImg.width, offscreenImg.height],
     }, [array.buffer]);
@@ -107,13 +107,12 @@ async function recomputePalette(array) {
     }
 
     // Get the computed palette from the background thread
-    let paletteSize = parseInt(paletteMinSizeField.value);
-    let paletteErrorBound = parseFloat(paletteErrorBoundField.value);
-    let [paletteColors, returnedArray] = await thread.sendRequest({
+    const paletteSize = parseInt(paletteMinSizeField.value);
+    const paletteErrorBound = parseFloat(paletteErrorBoundField.value);
+    const [paletteColors, returnedArray] = await thread.sendRequest({
         method: "computePalette",
         args: [array, offscreenImg.width, offscreenImg.height, paletteSize, paletteErrorBound],
     }, [array.buffer]);
-    console.log("received paletteColors:", paletteColors);
 
     // Resize our set of palette divs to the correct length
     if (paletteWrapper.children.length > paletteColors.length) {
@@ -127,7 +126,7 @@ async function recomputePalette(array) {
         }
     } else if (paletteWrapper.children.length < paletteColors.length) {
         while (paletteWrapper.children.length < paletteColors.length) {
-            let child = paletteElementTemplate.firstElementChild.cloneNode(true);
+            const child = paletteElementTemplate.firstElementChild.cloneNode(true);
             paletteWrapper.appendChild(child);
         }
     }
@@ -135,7 +134,7 @@ async function recomputePalette(array) {
     // Set the values for the palette divs' fields
     // The contents of the divs' images will be handled by reconstructImage.
     for (let i = 0; i < paletteWrapper.children.length; i++) {
-        let paletteDiv = paletteWrapper.children[i];
+        const paletteDiv = paletteWrapper.children[i];
 
         // Clear the event handlers before we actually change the the value so
         // we don't unnecessarily trigger them.
@@ -167,7 +166,7 @@ async function recomputePalette(array) {
 }
 
 async function reconstructImage() {
-    let currentPaletteColors = [];
+    const currentPaletteColors = [];
     for (const paletteNode of paletteWrapper.children) {
         const value = paletteNode.firstElementChild.value;
         const valueList = [
@@ -177,7 +176,6 @@ async function reconstructImage() {
         ];
         currentPaletteColors.push(valueList);
     }
-    console.log("currentPaletteColors:", currentPaletteColors);
 
     // If the set of decomposition palette colors has changed, then we need to recompute the
     if (g_imageWeightsPtr == undefined || currentPaletteColors != g_savedDecompositionPalette) {
@@ -192,12 +190,12 @@ async function reconstructImage() {
         //       The error should probably be displayed as an overlay on top of the output image.
 
         for (let i = 0; i < paletteWrapper.children.length; i++) {
-            let paletteDiv = paletteWrapper.children[i];
-            let blob = await thread.sendRequest({
+            const paletteDiv = paletteWrapper.children[i];
+            const blob = await thread.sendRequest({
                 method: "grayscaleImageChannel",
                 args: [g_deconstructedImagePtr, i],
             });
-            let url = URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob);
             if (paletteDiv.children["palette-img"].src.length != 0) {
                 URL.revokeObjectURL(paletteDiv.children["palette-img"].src);
             }
@@ -205,7 +203,7 @@ async function reconstructImage() {
         }
     }
 
-    let reconstructionPaletteColors = [];
+    const reconstructionPaletteColors = [];
     for (const paletteNode of paletteWrapper.children) {
         const value = paletteNode.children["palette-dst-color"].value;
         const valueList = [
@@ -215,14 +213,13 @@ async function reconstructImage() {
         ];
         reconstructionPaletteColors.push(valueList);
     }
-    console.log("reconstructionPaletteColors:", reconstructionPaletteColors);
 
     // Compute the reconstructed image
-    let blob = await thread.sendRequest({
+    const blob = await thread.sendRequest({
         method: "reconstructImage",
         args: [g_deconstructedImagePtr, reconstructionPaletteColors],
     });
-    let url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
     if (dstImg.src.length != 0) {
         URL.revokeObjectURL(dstImg.src);
     }

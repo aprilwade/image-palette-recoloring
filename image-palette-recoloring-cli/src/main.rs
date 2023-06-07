@@ -81,7 +81,6 @@ fn main_inner() -> Result<(), Box<dyn std::error::Error>> {
                 .unwrap().decode().unwrap();
             let img = img.into_rgb8();
             let palette = compute_palette(&img, min_size as usize, error_bound);
-            // let palette = image_recoloring::compute_palette_with_size(&img, 4);
             let palette_hex: Vec<String> = palette.iter()
                 .map(|color| format!("{:02x}{:02x}{:02x}", color.0[0], color.0[1], color.0[2]))
                 .collect();

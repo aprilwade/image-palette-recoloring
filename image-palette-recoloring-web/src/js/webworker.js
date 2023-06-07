@@ -3,7 +3,8 @@ import { ThreadWorker } from "async-thread-worker";
 
 const memory = new WebAssembly.Memory({
     initial: 100,
-    maximum: 1000,
+    // Allow for very large images
+    maximum: 4 * 1024 * 1024 * 1024 / 65536,
     shared: false,
 });
 
@@ -25,7 +26,6 @@ let wasmInstPromise = (async function() {
         js: { mem: memory },
     });
     wasi.inst = inst;
-    console.log(inst)
     return inst;
 })();
 
@@ -66,7 +66,6 @@ class RecoloringThreadWorker extends ThreadWorker {
                 // We don't want to leak wasm memory :(
                 wasmInst.exports.free_image_buffer(width * height * 3, bufPtr);
             }
-            console.log(`weightsPtr: ${weightsPtr}`);
             this.sendResponse(id, [weightsPtr, array], [array.buffer]);
         } else if (method == "computePalette") {
             let [array, width, height, minPaletteSize, errorBound] = args;
@@ -81,7 +80,6 @@ class RecoloringThreadWorker extends ThreadWorker {
 
             let palettePtr;
 
-            console.log("error bound: ", errorBound);
             let paletteSize;
             try {
                 palettePtr = wasmInst.exports.compute_palette(
