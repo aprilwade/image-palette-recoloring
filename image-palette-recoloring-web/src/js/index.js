@@ -12,6 +12,8 @@ const paletteErrorBoundField = document.getElementById("palette-err-limit");
 const paletteWrapper = document.getElementById("palette-wrapper");
 const paletteElementTemplate = document.getElementById("palette-element-template");
 
+const offscreenImg = new Image();
+
 let g_imageWeightsPtr;
 let g_deconstructedImagePtr;
 let g_savedDecompositionPalette;
@@ -50,10 +52,10 @@ function readBlobAsDataURL(blob) {
 }
 
 function computeSrcImageArray() {
-    let canvas = new OffscreenCanvas(srcImg.width, srcImg.height);
-    let ctx = canvas.getContext("2d");
-    ctx.drawImage(srcImg, 0, 0);
-    let imageData = ctx.getImageData(0, 0, srcImg.width, srcImg.height);
+    const canvas = new OffscreenCanvas(offscreenImg.width, offscreenImg.height);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(offscreenImg, 0, 0);
+    const imageData = ctx.getImageData(0, 0, offscreenImg.width, offscreenImg.height);
     return imageData.data;
 }
 
@@ -74,6 +76,7 @@ function colorValuesToString(values) {
 }
 
 async function initialSetup() {
+    offscreenImg.src = srcImg.src;
     // TODO: Disable all controls until we're done
     let array = computeSrcImageArray();
     array = await recomputeImageWeights(array);
@@ -88,7 +91,7 @@ async function recomputeImageWeights(array) {
     console.log("Issued request to worker");
     let [imageWeightsPtr, returnedArray] = await thread.sendRequest({
         method: "createImageWeights",
-        args: [array, srcImg.width, srcImg.height],
+        args: [array, offscreenImg.width, offscreenImg.height],
     }, [array.buffer]);
     console.log("Finished request to worker");
 
@@ -108,7 +111,7 @@ async function recomputePalette(array) {
     let paletteErrorBound = parseFloat(paletteErrorBoundField.value);
     let [paletteColors, returnedArray] = await thread.sendRequest({
         method: "computePalette",
-        args: [array, srcImg.width, srcImg.height, paletteSize, paletteErrorBound],
+        args: [array, offscreenImg.width, offscreenImg.height, paletteSize, paletteErrorBound],
     }, [array.buffer]);
     console.log("received paletteColors:", paletteColors);
 
@@ -231,14 +234,13 @@ window.addEventListener("load", (event) => {
     // When the image in srcImg changes, we need to recompute the palette
     srcImg.addEventListener("load", async () => await initialSetup());
 
-    let filepicker = document.getElementById("src-img-picker");
+    const filepicker = document.getElementById("src-img-picker");
     filepicker.addEventListener("change", (event) => {
         var selectedFile = event.target.files[0];
-        var reader = new FileReader();
-        reader.onload = async (event) => {
-            srcImg.src = reader.result;
+        if (srcImg.src.length != 0) {
+            URL.revokeObjectURL(srcImg.src);
         }
-        reader.readAsDataURL(selectedFile);
+        srcImg.src = URL.createObjectURL(selectedFile);
 
     });
 
@@ -249,6 +251,10 @@ window.addEventListener("load", (event) => {
         await recomputePalette();
     });
 
-    // Load "example.png" into the main canvas
-    srcImg.src = "example.png";
+    // Load "example.png" into the main image
+    (async () => {
+        let response = await fetch("example.png");
+        let blob = await response.blob();
+        srcImg.src = URL.createObjectURL(blob);
+    })();
 });
