@@ -1,0 +1,13 @@
+[package]
+name = "image-palette-recoloring-c"
+version = "0.1.0"
+authors = ["April Wade <wayedt@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+image = "0.24"
+image-palette-recoloring = { path = "../image-palette-recoloring" }
+libc = "0.2"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
