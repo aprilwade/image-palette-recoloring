@@ -9,7 +9,7 @@ const memory = new WebAssembly.Memory({
 
 let stdout = new File([]);
 let stderr = new File([]);
-let wasmInst = await (async function() {
+let wasmInstPromise = (async function() {
     let args = [];
     let env = [];
     let fds = [
@@ -30,7 +30,8 @@ let wasmInst = await (async function() {
 })();
 
 class RecoloringThreadWorker extends ThreadWorker {
-    onRequest(id, payload) {
+    async onRequest(id, payload) {
+        const wasmInst = await wasmInstPromise;
         let { method, args } = payload;
         if (method == "createImageWeights") {
             let [array, width, height] = args;
