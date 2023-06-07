@@ -85,10 +85,12 @@ async function recomputeImageWeights(array) {
         array = await computeSrcImageArray();
     }
 
+    console.log("Issued request to worker");
     let [imageWeightsPtr, returnedArray] = await thread.sendRequest({
         method: "createImageWeights",
         args: [array, srcImg.width, srcImg.height],
     }, [array.buffer]);
+    console.log("Finished request to worker");
 
     g_imageWeightsPtr = imageWeightsPtr;
 
@@ -188,17 +190,11 @@ async function reconstructImage() {
 
         for (let i = 0; i < paletteWrapper.children.length; i++) {
             let paletteDiv = paletteWrapper.children[i];
-            let imageBuf = await thread.sendRequest({
+            let blob = await thread.sendRequest({
                 method: "grayscaleImageChannel",
                 args: [g_deconstructedImagePtr, i],
             });
-            let imageData = new ImageData(imageBuf, srcImg.width, srcImg.height);
-
-            let canvas = new OffscreenCanvas(srcImg.width, srcImg.height);
-            let ctx = canvas.getContext("2d");
-            ctx.putImageData(imageData, 0, 0);
-
-            let url = URL.createObjectURL(await canvas.convertToBlob());
+            let url = URL.createObjectURL(blob);
             if (paletteDiv.children["palette-img"].src.length != 0) {
                 URL.revokeObjectURL(paletteDiv.children["palette-img"].src);
             }
@@ -219,15 +215,11 @@ async function reconstructImage() {
     console.log("reconstructionPaletteColors:", reconstructionPaletteColors);
 
     // Compute the reconstructed image
-    let imageBuf = await thread.sendRequest({
+    let blob = await thread.sendRequest({
         method: "reconstructImage",
         args: [g_deconstructedImagePtr, reconstructionPaletteColors],
     });
-    let imageData = new ImageData(imageBuf, srcImg.width, srcImg.height);
-    let canvas = new OffscreenCanvas(srcImg.width, srcImg.height);
-    let ctx = canvas.getContext("2d");
-    ctx.putImageData(imageData, 0, 0);
-    let url = URL.createObjectURL(await canvas.convertToBlob());
+    let url = URL.createObjectURL(blob);
     if (dstImg.src.length != 0) {
         URL.revokeObjectURL(dstImg.src);
     }

@@ -29,6 +29,15 @@ let wasmInstPromise = (async function() {
     return inst;
 })();
 
+async function createBlobForArray(array, width, height) {
+    let imageData = new ImageData(array, width, height);
+
+    let canvas = new OffscreenCanvas(width, height);
+    let ctx = canvas.getContext("2d");
+    ctx.putImageData(imageData, 0, 0);
+    return await canvas.convertToBlob();
+}
+
 class RecoloringThreadWorker extends ThreadWorker {
     async onRequest(id, payload) {
         const wasmInst = await wasmInstPromise;
@@ -171,8 +180,8 @@ class RecoloringThreadWorker extends ThreadWorker {
                     outputArray[i * 4 + 3] = 255;
                 }
                 wasmInst.exports.free_image_buffer(width * height * 3, imagePtr);
-
-                this.sendResponse(id, outputArray, [outputArray.buffer]);
+                let blob = await createBlobForArray(outputArray, width, height);
+                this.sendResponse(id, blob);
             } else {
                 this.sendError(id, "Invalid palette size");
             }
@@ -202,8 +211,8 @@ class RecoloringThreadWorker extends ThreadWorker {
                     outputArray[i * 4 + 3] = 255;
                 }
                 wasmInst.exports.free_image_buffer(width * height, imagePtr);
-
-                this.sendResponse(id, outputArray, [outputArray.buffer]);
+                let blob = await createBlobForArray(outputArray, width, height);
+                this.sendResponse(id, blob);
             } else {
                 this.sendError(id, "Invalid palette channel");
             }
