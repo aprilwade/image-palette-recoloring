@@ -79,7 +79,12 @@ unsafe extern "C" fn create_decomposed_image(
 {
     let image_weights = &*(image_weights as *const ImageWeights);
     let palette = slice::from_raw_parts(palette as *mut Rgb<u8>, palette_size as usize);
-    let decomposed = Box::new(DecomposedImage::new(&image_weights, palette));
+
+    let decomposed = match DecomposedImage::new(&image_weights, palette) {
+        Ok(val) => val,
+        Err(_) => return ptr::null(),
+    };
+    let decomposed = Box::new(decomposed);
     Box::into_raw(decomposed) as *const c_void
 }
 
@@ -141,4 +146,13 @@ unsafe extern "C" fn grayscale_image_channel(
     );
     output_slice.copy_from_slice(&reconstructed);
     1
+}
+
+#[no_mangle]
+unsafe extern "C" fn get_decomposed_image_num_channels(
+    decomposed_image: *const c_void,
+) -> u8
+{
+    let decomposed_image = &*(decomposed_image as *const DecomposedImage);
+    decomposed_image.num_channels() as u8
 }
