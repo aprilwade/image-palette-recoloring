@@ -1,0 +1,37 @@
+{
+  "name": "image-palette-recoloring-web",
+  "version": "0.0.0",
+  "license": "MIT OR Apache-2.0",
+  "description": "",
+  "publish": false,
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aprilwade/image-palette-recoloring.git"
+  },
+  "author": "aprilwade",
+  "bugs": {
+    "url": "https://github.com/aprilwade/image-palette-recoloring/issues"
+  },
+  "homepage": "https://github.com/aprilwade/image-palette-recoloring#readme",
+  "dependencies": {
+    "@bjorn3/browser_wasi_shim": "^0.2.8",
+    "async-thread-worker": "^0.9.4"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.29.1",
+    "npm-run-all": "^4.1.5",
+    "onchange": "^7.1.0",
+    "webpack": "^5.82.1",
+    "webpack-cli": "^5.1.1"
+  },
+  "scripts": {
+    "copy:assets": "cp -r src/html/* src/css/* src/images/* dist",
+    "watch:assets": "onchange \"src/html/*\" \"src/css/*\" \"src/images/*\" -- npm run copy:assets",
+    "build:js": "webpack",
+    "watch:js": "onchange \"src/js/*.js\" -- npm run build:js",
+    "watch": "run-p watch:assets watch:js",
+    "build": "run-s copy:assets build:js",
+    "serve": "browser-sync start --server \"dist\" --files \"dist\""
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Image Recolorer</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id="src-img-wrapper">
+        <img id="src-img"></img>
+        <input type="file" id="src-img-picker">
+    </div>
+    <div id="dst-img-wrapper">
+        <img id="dst-img"></img>
+        <button id="recompute-output-button">Recompute output</button>
+    </div>
+
+    <div id="palette-settings">
+        <label for="palette-cnt">Number of palette colors:</label>
+        <input type="number" name="palette-cnt" id="palette-cnt" min="4" value="4">
+        <label for="palette-err-limit">Palette error limit:</label>
+        <input type="number" name="palette-err-limit" id="palette-err-limit" value="0.0" min="0.0">
+        <button id="recompute-palette-button">Recompute Palette</button>
+    </div>
+
+    <div id="palette-wrapper">
+    </div>
+    <div style="visibility: hidden" id="palette-element-template">
+        <div>
+            <input type="color" name="palette-src-color">
+            <input type="text" name="palette-src-color-txt">
+            <br>
+            <input type="color" name="palette-dst-color">
+            <input type="text" name="palette-dst-color-txt">
+            <img name="palette-img">
+        </div>
+    </div>
+
+    <script type='text/javascript' src="main.js"></script>
+</body>
+
+</html>
