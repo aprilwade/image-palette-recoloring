@@ -78,6 +78,23 @@ function colorValuesToString(values) {
 async function initialSetup() {
     offscreenImg.src = srcImg.src;
     // TODO: Disable all controls until we're done
+
+    // TODO:
+    if (g_imageWeightsPtr != undefined) {
+        await thread.sendRequest({
+            method: "freeImageWeights",
+            args: [g_imageWeightsPtr],
+        })
+        g_imageWeightsPtr = undefined;
+    }
+    if (g_deconstructedImagePtr != undefined) {
+        await thread.sendRequest({
+            method: "freeDecomposedImage",
+            args: [g_deconstructedImagePtr],
+        })
+        g_deconstructedImagePtr = undefined;
+    }
+
     let array = computeSrcImageArray();
     array = await recomputeImageWeights(array);
     await recomputePalette(array);
@@ -180,6 +197,12 @@ async function reconstructImage() {
     // If the set of decomposition palette colors has changed, then we need to recompute the
     if (g_imageWeightsPtr == undefined || currentPaletteColors != g_savedDecompositionPalette) {
         g_savedDecompositionPalette = currentPaletteColors;
+        if (g_deconstructedImagePtr != undefined) {
+            await thread.sendRequest({
+                method: "freeDecomposedImage",
+                args: [g_deconstructedImagePtr],
+            })
+        }
         g_deconstructedImagePtr = await thread.sendRequest({
             method: "createDecomposedImage",
             args: [g_imageWeightsPtr, g_savedDecompositionPalette],
