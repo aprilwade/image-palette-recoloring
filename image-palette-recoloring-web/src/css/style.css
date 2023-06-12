@@ -1,3 +1,6 @@
+html {
+    font-family: sans-serif;
+}
 
 #dst-img-wrapper {
     display: inline-block;
@@ -39,4 +42,10 @@
 #palette-wrapper > div > input[type="text"] {
     font-family: monospace;
     width: 5em;
+}
+
+#palette-wrapper > div > label {
+    display: inline-block;
+    width: 5em;
+    text-align: right;
 }

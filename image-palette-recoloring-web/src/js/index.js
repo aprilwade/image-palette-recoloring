@@ -185,7 +185,7 @@ async function recomputePalette(array) {
 async function reconstructImage() {
     const currentPaletteColors = [];
     for (const paletteNode of paletteWrapper.children) {
-        const value = paletteNode.firstElementChild.value;
+        const value = paletteNode.children["palette-src-color"].value;
         const valueList = [
             parseInt(value[1] + value[2], 16),
             parseInt(value[3] + value[4], 16),

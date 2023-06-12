@@ -7,29 +7,37 @@
 </head>
 <body>
     <div id="src-img-wrapper">
+        <h2>Original Image</h2>
         <img id="src-img"></img>
         <input type="file" id="src-img-picker" accept="image/*">
     </div>
     <div id="dst-img-wrapper">
+        <h2>Reconstructed Image</h2>
         <img id="dst-img"></img>
         <button id="recompute-output-button">Recompute output</button>
     </div>
 
     <div id="palette-settings">
-        <label for="palette-cnt">Number of palette colors:</label>
+        <h2>Palette Generation Settings</h2>
+        <label for="palette-cnt">Minimum number of palette colors:</label>
         <input type="number" name="palette-cnt" id="palette-cnt" min="4" value="4">
-        <label for="palette-err-limit">Palette error limit:</label>
+        <br>
+        <label for="palette-err-limit">Maximum palette error limit:</label>
         <input type="number" name="palette-err-limit" id="palette-err-limit" value="0.0" min="0.0">
+        <br>
         <button id="recompute-palette-button">Recompute Palette</button>
     </div>
 
+    <h2>Palette</h2>
     <div id="palette-wrapper">
     </div>
     <div style="visibility: hidden" id="palette-element-template">
         <div>
+            <label for="palette-src-color">Original:</label>
             <input type="color" name="palette-src-color">
             <input type="text" name="palette-src-color-txt">
             <br>
+            <label for="palette-dst-color">Remapped:</label>
             <input type="color" name="palette-dst-color">
             <input type="text" name="palette-dst-color-txt">
             <img name="palette-img">
