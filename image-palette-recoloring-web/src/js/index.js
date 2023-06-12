@@ -11,6 +11,10 @@ const paletteMinSizeField = document.getElementById("palette-cnt");
 const paletteErrorBoundField = document.getElementById("palette-err-limit");
 const paletteWrapper = document.getElementById("palette-wrapper");
 const paletteElementTemplate = document.getElementById("palette-element-template");
+const dstSpinner = document.getElementById("dst-spinner");
+const recomputeOutputButton = document.getElementById("recompute-output-button");
+const recomputePaletteButton = document.getElementById("recompute-palette-button");
+const srcImgPicker = document.getElementById("src-img-picker");
 
 const offscreenImg = new Image();
 
@@ -76,10 +80,14 @@ function colorValuesToString(values) {
 }
 
 async function initialSetup() {
+    // TODO: Replace the dest image with a placeholder that is the same size
     offscreenImg.src = srcImg.src;
     // TODO: Disable all controls until we're done
+    dstSpinner.style.visibility = "visible";
+    recomputeOutputButton.disabled = true;
+    recomputePaletteButton.disabled = true;
+    srcImgPicker.disabled = true;
 
-    // TODO:
     if (g_imageWeightsPtr != undefined) {
         await thread.sendRequest({
             method: "freeImageWeights",
@@ -247,6 +255,10 @@ async function reconstructImage() {
         URL.revokeObjectURL(dstImg.src);
     }
     dstImg.src = url;
+    dstSpinner.style.visibility = "hidden";
+    recomputeOutputButton.disabled = false;
+    recomputePaletteButton.disabled = false;
+    srcImgPicker.disabled = false;
 }
 
 window.addEventListener("load", (event) => {
@@ -254,8 +266,7 @@ window.addEventListener("load", (event) => {
     // When the image in srcImg changes, we need to recompute the palette
     srcImg.addEventListener("load", async () => await initialSetup());
 
-    const filepicker = document.getElementById("src-img-picker");
-    filepicker.addEventListener("change", (event) => {
+    srcImgPicker.addEventListener("change", (event) => {
         var selectedFile = event.target.files[0];
         if (srcImg.src.length != 0) {
             URL.revokeObjectURL(srcImg.src);
@@ -264,10 +275,10 @@ window.addEventListener("load", (event) => {
 
     });
 
-    document.getElementById("recompute-output-button").addEventListener("click", async () => {
+    recomputeOutputButton.addEventListener("click", async () => {
         await reconstructImage();
     });
-    document.getElementById("recompute-palette-button").addEventListener("click", async () => {
+    recomputePaletteButton.addEventListener("click", async () => {
         await recomputePalette();
     });
 

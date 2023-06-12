@@ -6,15 +6,18 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <div id="src-img-wrapper">
-        <h2>Original Image</h2>
-        <img id="src-img"></img>
-        <input type="file" id="src-img-picker" accept="image/*">
-    </div>
-    <div id="dst-img-wrapper">
-        <h2>Reconstructed Image</h2>
-        <img id="dst-img"></img>
-        <button id="recompute-output-button">Recompute output</button>
+    <div style="display: flex;">
+        <div id="src-img-wrapper">
+            <h2>Original Image</h2>
+            <img id="src-img"></img>
+            <input type="file" id="src-img-picker" accept="image/*">
+        </div>
+        <div id="dst-img-wrapper">
+            <h2>Reconstructed Image</h2>
+            <img id="dst-img"></img>
+            <div id="dst-spinner" class="spinner"></div>
+            <button id="recompute-output-button">Recompute output</button>
+        </div>
     </div>
 
     <div id="palette-settings">

@@ -4,12 +4,15 @@ html {
 
 #dst-img-wrapper {
     display: inline-block;
+    position: relative;
     width: 49%;
+    flex:1;
 }
 
 #src-img-wrapper {
     display: inline-block;
     width: 49%;
+    flex:1;
 }
 
 #src-img {
@@ -48,4 +51,32 @@ html {
     display: inline-block;
     width: 5em;
     text-align: right;
+}
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+.spinner {
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 75px;
+  height: 75px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 4px solid #ccc;
+  border-top-color: #000;
+  animation: spinner .6s linear infinite;
 }
