@@ -21,17 +21,17 @@ const C_FILES: &[&str] = &[
 
 // These are header files we want to watch for changes too
 const HEADER_FILES: &[&str] = &[
-    "libqhull_r.h",
-    "qhull_ra.h",
-    "stat_r.h",
-    "user_r.h",
-    "mem_r.h",
-    "qset_r.h",
-    "random_r.h",
-    "io_r.h",
-    "merge_r.h",
-    "poly_r.h",
-    "geom_r.h",
+    "qhull/src/libqhull_r/libqhull_r.h",
+    "qhull/src/libqhull_r/qhull_ra.h",
+    "qhull/src/libqhull_r/stat_r.h",
+    "qhull/src/libqhull_r/user_r.h",
+    "qhull/src/libqhull_r/mem_r.h",
+    "qhull/src/libqhull_r/qset_r.h",
+    "qhull/src/libqhull_r/random_r.h",
+    "qhull/src/libqhull_r/io_r.h",
+    "qhull/src/libqhull_r/merge_r.h",
+    "qhull/src/libqhull_r/poly_r.h",
+    "qhull/src/libqhull_r/geom_r.h",
 ];
 
 fn main() {
