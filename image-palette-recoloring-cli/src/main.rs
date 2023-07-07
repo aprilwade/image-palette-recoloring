@@ -25,6 +25,11 @@ enum Commands {
             value_parser = clap::builder::RangedU64ValueParser::<u8>::new().range(4..),
         )]
         min_size: u8,
+        #[arg(
+            long,
+            default_value_t = 10,
+        )]
+        max_size: u8,
         #[arg(value_name = "INPUT_IMAGE")]
         input_image: PathBuf,
     },
@@ -76,11 +81,11 @@ fn parse_color_list(list: &str) -> Result<ColorList, String> {
 fn main_inner() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
     match cli.commands {
-        Commands::GeneratePalette { error_bound, min_size, input_image } => {
+        Commands::GeneratePalette { error_bound, min_size, max_size, input_image } => {
             let img = ImageReader::open(&input_image)
                 .unwrap().decode().unwrap();
             let img = img.into_rgb8();
-            let palette = compute_palette(&img, min_size as usize, error_bound);
+            let palette = compute_palette(&img, min_size as usize, max_size as usize, error_bound);
             let palette_hex: Vec<String> = palette.iter()
                 .map(|color| format!("{:02x}{:02x}{:02x}", color.0[0], color.0[1], color.0[2]))
                 .collect();
@@ -127,6 +132,6 @@ fn main_inner() -> Result<(), Box<dyn std::error::Error>> {
 fn main() {
     match main_inner() {
         Ok(()) => (),
-        Err(e) => println!("Fuck: {e}"),
+        Err(e) => println!("Error: {e}"),
     }
 }

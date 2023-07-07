@@ -39,6 +39,7 @@ use crate::triangle_distance::triangle_distance_sqr;
 pub fn compute_palette(
     img: &impl GenericImageView<Pixel = Rgb<u8>>,
     min_palette_size: usize,
+    max_palette_size: usize,
     error_bound: f64,
 ) -> Vec<Rgb<u8>>
 {
@@ -87,9 +88,8 @@ pub fn compute_palette(
 
         // Calculating the average error can be expensive, so only do it for the last 6 or so
         // iterations
-        if ch.vertices().len() <= 10 {
+        if ch.vertices().len() <= max_palette_size {
             let error = compute_pixel_error(&ch, &pixel_counts, total_count);
-            println!("{}", error);
             if error > error_bound {
                 // We've reached or exceeded the error bound, so we are exiting here.
                 // We return the previous hull that still was inside the error bound.

@@ -68,7 +68,7 @@ class RecoloringThreadWorker extends ThreadWorker {
             }
             this.sendResponse(id, [weightsPtr, array], [array.buffer]);
         } else if (method == "computePalette") {
-            let [array, width, height, minPaletteSize, errorBound] = args;
+            let [array, width, height, minPaletteSize, maxPaletteSize, errorBound] = args;
             let bufPtr = wasmInst.exports.create_image_buffer(width * height * 3 + 1);
             let buf = new Uint8ClampedArray(wasmInst.exports.memory.buffer, bufPtr, width * height * 3 + 1);
             for (let i = 0; i < width * height; i++) {
@@ -87,6 +87,7 @@ class RecoloringThreadWorker extends ThreadWorker {
                     height,
                     bufPtr,
                     minPaletteSize,
+                    maxPaletteSize,
                     errorBound,
                     bufPtr + width * height * 3,
                 );

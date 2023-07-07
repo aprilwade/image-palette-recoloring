@@ -7,7 +7,8 @@ const thread = new Thread('./webworker.js');
 
 const srcImg = document.getElementById("src-img");
 const dstImg = document.getElementById("dst-img");
-const paletteMinSizeField = document.getElementById("palette-cnt");
+const paletteMinSizeField = document.getElementById("min-palette-cnt");
+const paletteMaxSizeField = document.getElementById("max-palette-cnt");
 const paletteErrorBoundField = document.getElementById("palette-err-limit");
 const paletteWrapper = document.getElementById("palette-wrapper");
 const paletteElementTemplate = document.getElementById("palette-element-template");
@@ -132,11 +133,12 @@ async function recomputePalette(array) {
     }
 
     // Get the computed palette from the background thread
-    const paletteSize = parseInt(paletteMinSizeField.value);
+    const paletteMinSize = parseInt(paletteMinSizeField.value);
+    const paletteMaxSize = parseInt(paletteMaxSizeField.value);
     const paletteErrorBound = parseFloat(paletteErrorBoundField.value);
     const [paletteColors, returnedArray] = await thread.sendRequest({
         method: "computePalette",
-        args: [array, offscreenImg.width, offscreenImg.height, paletteSize, paletteErrorBound],
+        args: [array, offscreenImg.width, offscreenImg.height, paletteMinSize, paletteMaxSize, paletteErrorBound],
     }, [array.buffer]);
 
     // Resize our set of palette divs to the correct length

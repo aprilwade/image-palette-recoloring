@@ -45,6 +45,7 @@ unsafe extern "C" fn compute_palette(
     img_height: u32,
     img_bytes: *const u8,
     min_palette_size: u8,
+    max_palette_size: u8,
     error_bound: f64,
     out_palette_size: *mut u8
 ) -> *mut [u8; 3]
@@ -57,6 +58,7 @@ unsafe extern "C" fn compute_palette(
     let palette = image_palette_recoloring::compute_palette(
         &img,
         min_palette_size as usize,
+        max_palette_size as usize,
         error_bound
     );
 
